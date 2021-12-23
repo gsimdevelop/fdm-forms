@@ -1,3 +1,7 @@
+:root {
+	--red-color: #ca0411;
+}
+
 html, body {
 	position: relative;
 	width: 100%;
