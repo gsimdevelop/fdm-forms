@@ -5,6 +5,7 @@ import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 import css from 'rollup-plugin-css-only';
 import copy from 'rollup-plugin-copy'
+import json from '@rollup/plugin-json'
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -18,7 +19,7 @@ function serve() {
 	return {
 		writeBundle() {
 			if (server) return;
-			server = require('child_process').spawn('npm', ['run', 'start', '--', '--dev'], {
+			server = require('child_process').spawn('npm', ['run', 'start', '--', '--dev', '--port 8080'], {
 				stdio: ['ignore', 'inherit', 'inherit'],
 				shell: true
 			});
@@ -59,6 +60,8 @@ export default {
 		}),
 		commonjs(),
 
+		json(),
+
 		// In dev mode, call `npm run start` once
 		// the bundle has been generated
 		!production && serve(),
@@ -72,10 +75,10 @@ export default {
 		production && terser(),
 
 		// // Copy our public folder to frontend folder
-    // production &&
-    // copy({
-    //   targets: [{ src: 'public/*', dest: '../../admin/forms' }],
-    // }),
+    production &&
+    copy({
+      targets: [{ src: 'public/*', dest: '/mnt/c/Users/Laboratorio_simGEST/Documents/desarrollo/repos/gestioninterna-fdm/forms' }],
+    }),
 	],
 	watch: {
 		clearScreen: false

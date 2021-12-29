@@ -1,0 +1,10 @@
+{
+  "landpage": {
+    "welcome": "¡Bienvenido al formulario de visitante!",
+    "buttonProf": "Soy un profesional",
+    "buttonPart": "Soy un particular"
+  },
+  "navigation": {
+    "visitorsInfo": "Info Visitantes"
+  }
+}
