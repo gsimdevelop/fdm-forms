@@ -53,6 +53,8 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    padding-left: 15px;
+    text-align: center;
   }
 
   .nav-logo {

@@ -1,7 +1,10 @@
 const objToWWWForm = (obj) => {
   let form = ''
-  for(let key in obj) {
-    form += `${key}=${obj[key]}&`
+  for (let key in obj) {
+    if(typeof(obj[key]) === 'object')
+      form += `${key}=[${objToWWWForm(obj[key])}]&`
+    else
+      form += `${key}=${obj[key]}&`
   }
   return form.slice(0, -1)
 }
@@ -10,7 +13,7 @@ const objToWWWForm = (obj) => {
 const validateNIF = (nif, passport) => {
   const nifRegex = /^([0-9]{8})([A-Z])$/i
   const cifRegex = /^([A-Z])([0-9]{7})([A-HK-NPQS0-9])$/i
-  const psprtRegex = /^[A-Z]{3}[0-9]{6}[A-Z]?$/i
+  // const psprtRegex = /^[A-Z]{3}[0-9]{6}[A-Z]?$/i
   const mapNif = 'trwagmyfpdxbnjzsqvhlcke'
 
   if(nif !== '') {
@@ -28,9 +31,17 @@ const validateNIF = (nif, passport) => {
     }
     else
       return false
-  } else {
-    return passport.match(psprtRegex) !== null
-  }
+  } else if(passport !== '')
+    return passport.length > 2
+  return false
 }
 
-export { objToWWWForm, validateNIF }
+const serializeForm = function (formData) {
+	const obj = {};
+	for (let key of formData.keys())
+		obj[key] = formData.get(key);
+	return obj;
+};
+
+
+export { objToWWWForm, validateNIF, serializeForm }

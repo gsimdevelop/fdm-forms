@@ -6,5 +6,46 @@
   },
   "navigation": {
     "visitorsInfo": "Info Visitantes"
+  },
+  "visitorPro": {
+    "headForm": {
+      "fiscalCountry": "País fiscal empresa",
+      "nif": "NIF/CIF"
+    },
+    "modalCode": {
+      "title": "Recuperar datos",
+      "cancel": "Cancelar",
+      "accept": "Sí, cargar datos",
+      "body1": "Hemos detectado datos para este CIF/NIF asociados al correo",
+      "body2": "¿Desea restaurarlos? Se le enviará un código a la dirección de correo para cargarlos."
+    },
+    "codeForm": {
+      "placeholderGetCode": "Introduce el código"
+    },
+    "companySection": {
+      "title": "DATOS DE LA EMPRESA",
+      "name": "Nombre de empresa",
+      "mail": "Correo electrónico",
+      "zipCode": "Código postal",
+      "province": "Provincia",
+      "city": "Ciudad",
+      "phone": "Teléfono",
+      "address": "Dirección",
+      "web": "Página web",
+      "sector": "Sector"
+    },
+    "visitorSection": {
+      "title": "DATOS DEL VISITANTE",
+      "visitorNumberSelector": "Seleccione el número de visitantes",
+      "visitor": "Visitante",
+      "name": "Nombre",
+      "nifPassport": "NIF / Pasaporte",
+      "mail": "Correo electrónico",
+      "phone": "Teléfono",
+      "address": "Dirección",
+      "job": "Puesto",
+      "bornDate": "Fecha de nacimiento"
+    },
+    "sendButton": "Enviar"
   }
 }
