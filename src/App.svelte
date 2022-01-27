@@ -5,25 +5,30 @@
 
 <script>
 	import Navigator from './Components/Navigator.svelte'
-	import VisitorParForm from './Components/VisitorParForm.svelte';
-	import VisitorProForm from './Components/VisitorProForm.svelte';
+	import VisitorForm from './VisitorForm.svelte'
+	import ExpositorForm from './ExpositorForm.svelte'
 	import { _ } from './services/i18n'
 
-	let formSelected
+	const formVisitorStr = '#Visitor'
+	const formExpositorStr = '#Expositor'
+	$: formSelected = document.location.hash
 </script>
 
 <Navigator/>
 <main>
-	<h2>{$_('landpage.welcome')}</h2>
-	<button on:click={() => formSelected = 'Prof'} class:selected={formSelected === 'Prof'}>{$_('landpage.buttonProf')}</button>
-	<button on:click={() => formSelected = 'Part'} class:selected={formSelected === 'Part'}>{$_('landpage.buttonPart')}</button>
-	{#if formSelected === 'Prof'}
-		<VisitorProForm/>
-		{:else if formSelected === 'Part'}
-		<VisitorParForm/>
+	{#if formSelected===formExpositorStr}
+	<ExpositorForm/>
+	{:else if formSelected===formVisitorStr}
+	<VisitorForm/>
+	{:else}
+	<h2>{$_('landingPage.title')}</h2>
+	<a href={formExpositorStr}><button on:click={() => formSelected = formExpositorStr}>{$_('landingPage.formExpo')}</button></a>
+	<a href={formVisitorStr}><button on:click={() => formSelected = formVisitorStr}>{$_('landingPage.formVisitor')}</button></a>
 	{/if}
 </main>
-
+<footer>
+		
+</footer>
 <style>
 	main {
 		text-align: center;

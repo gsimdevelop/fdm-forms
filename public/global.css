@@ -250,6 +250,22 @@ option:disabled {
 	grid-column: 2 / 3;
 }
 
+.span-2 {
+	grid-column: span 2;
+}
+
+.error {
+	color: var(--red-color);
+	font-weight: bold;
+	font-size: 0.8em;
+	align-self: start;
+	letter-spacing: 0.3px;
+}
+
+.text-upper {
+	text-transform: uppercase;
+}
+
 @media(max-width: 768px) {
 	.business-section, .visitors-section, .visitor-section {
 		grid-template-columns: 1fr;

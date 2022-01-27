@@ -1,51 +1,80 @@
 {
-  "landpage": {
-    "welcome": "¡Bienvenido al formulario de visitante!",
-    "buttonProf": "Soy un profesional",
-    "buttonPart": "Soy un particular"
-  },
   "navigation": {
     "visitorsInfo": "Info Visitantes"
   },
-  "visitorPro": {
-    "headForm": {
-      "fiscalCountry": "País fiscal empresa",
-      "nif": "NIF/CIF"
+  "landingPage": {
+    "title": "Seleccione el formulario al que quiere acceder",
+    "formExpo": "Formulario para exponer",
+    "formVisitor": "Formulario para visitantes"
+  },
+  "visitor": {
+    "landpage": {
+      "welcome": "¡Bienvenido al formulario de visitante!",
+      "buttonProf": "Soy un profesional",
+      "buttonPart": "Soy un particular"
     },
-    "modalCode": {
-      "title": "Recuperar datos",
-      "cancel": "Cancelar",
-      "accept": "Sí, cargar datos",
-      "body1": "Hemos detectado datos para este CIF/NIF asociados al correo",
-      "body2": "¿Desea restaurarlos? Se le enviará un código a la dirección de correo para cargarlos."
-    },
-    "codeForm": {
-      "placeholderGetCode": "Introduce el código"
-    },
-    "companySection": {
-      "title": "DATOS DE LA EMPRESA",
-      "name": "Nombre de empresa",
-      "mail": "Correo electrónico",
-      "zipCode": "Código postal",
-      "province": "Provincia",
-      "city": "Ciudad",
-      "phone": "Teléfono",
-      "address": "Dirección",
-      "web": "Página web",
-      "sector": "Sector"
-    },
-    "visitorSection": {
-      "title": "DATOS DEL VISITANTE",
-      "visitorNumberSelector": "Seleccione el número de visitantes",
-      "visitor": "Visitante",
-      "name": "Nombre",
-      "nifPassport": "NIF / Pasaporte",
-      "mail": "Correo electrónico",
-      "phone": "Teléfono",
-      "address": "Dirección",
-      "job": "Puesto",
-      "bornDate": "Fecha de nacimiento"
-    },
-    "sendButton": "Enviar"
+    "visitorPro": {
+      "headForm": {
+        "fiscalCountry": "País fiscal empresa",
+        "nif": "NIF/CIF"
+      },
+      "modalCode": {
+        "title": "Recuperar datos",
+        "cancel": "Cancelar",
+        "accept": "Sí, cargar datos",
+        "body1": "Hemos detectado datos para este CIF/NIF asociados al correo",
+        "body2": "¿Desea restaurarlos? Se le enviará un código a la dirección de correo para cargarlos."
+      },
+      "codeForm": {
+        "placeholderGetCode": "Introduce el código"
+      },
+      "companySection": {
+        "title": "DATOS DE LA EMPRESA",
+        "name": "Nombre de empresa",
+        "mail": "Correo electrónico",
+        "zipCode": "Código postal",
+        "province": "Provincia",
+        "city": "Ciudad",
+        "phone": "Teléfono",
+        "address": "Dirección",
+        "web": "Página web",
+        "sector": "Sector",
+        "error": {
+          "email": "El correo electrónico no es válido",
+          "urlWeb": "La página web no es válida"
+        },
+        "contactName": "Nombre de contacto",
+        "contactPhone": "Teléfono móvil de contacto",
+        "contactEmail": "Email de contacto",
+        "politicPrivacy": "política de privacidad",
+        "politicPrivacyText": "Protección de Datos. He leído y acepto la "
+      },
+      "visitorSection": {
+        "title": "DATOS DEL VISITANTE",
+        "visitorNumberSelector": "Seleccione el número de visitantes",
+        "visitor": "Visitante",
+        "name": "Nombre y apellidos",
+        "nif": "DNI",
+        "passport": "Pasaporte",
+        "mail": "Correo electrónico",
+        "phone": "Teléfono móvil",
+        "address": "Dirección",
+        "job": "Puesto",
+        "bornDate": "Fecha de nacimiento",
+        "error": {
+          "phoneRequired": "El teléfono móvil es obligatorio"
+        }
+      },
+      "sendButton": "Enviar"
+    }
+  },
+  "expositor": {
+    "submitButton": "Imprimir para firmar",
+    "finalModal": {
+      "title": "Su formulario ha sido enviado",
+      "body": "Para completar el proceso de inscripción, debe imprimir el formulario y seguir los pasos que se indican en él. Se le ha enviado una copia del formulario a la dirección de correo especificada:",
+      "reload": "Recargar el formulario",
+      "return": "Volver a la página principal"
+    }
   }
 }

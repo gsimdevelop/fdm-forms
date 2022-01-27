@@ -2,14 +2,18 @@
   import Modal from '../ui/Modal.svelte'
   import Overlay from '../ui/Overlay.svelte'
 
-  import { objToWWWForm, validateNIF, serializeForm } from '../services/utils'
+  import { objToWWWForm, validateNIF, serializeForm, validateVisitorForm, ESP_COUNTRY } from '../services/utils'
 
   import { _ } from '../services/i18n'
 
-  const ESP_COUNTRY = 'ESP'
+  
+  let countries
   const getCountries = async () => {
-    const response = await fetch('/gestioninterna/funciones/paises.php');
-    return await response.json();
+    if(!countries) {
+      const response = await fetch('/gestioninterna/funciones/paises.php')
+      countries = await response.json()
+    }
+    return countries
   }
   
   const getFields = async () => {
@@ -22,26 +26,40 @@
     return await response.json();
   }
 
-  let formDatas = { selectedCountry: ESP_COUNTRY, nif: '', passport: '', 
-                      business: { name: '', city: '', cp: '', address: '', province: '',
-                      email: '', phone: '', web: '', sector: '' }}
   
   let step = 0
 
-  let overlay = false, modal = false, correoDetected = ''
+  const initFormData = () => (
+    { 
+      selectedCountry: ESP_COUNTRY, nif: '', passport: '', 
+      business: { 
+        name: '', city: '', cp: '', province: '', email: '', phone: '', web: '', sector: '' 
+      }
+    }
+  )
+  
+  const initVisitorsArray = () => Array(10)
+                  .fill({ name: '', nif: '', passport: '', country: ESP_COUNTRY, email: '', phone: '', job: '' })
+                  .map((_e, i) => ({..._e, id: i+1}))
+    
+  let visitorsArray = initVisitorsArray()
+  
+  let formDatas = initFormData()
 
-  let nVisitors = '1'
+  let overlay = false, modal = false, correoDetected = '', visitorsIndexArray = [1]
+
+  let nVisitors = '1';
 
   $: formDatas.nif = formDatas.nif.toUpperCase()
   $: formDatas.passport = formDatas.passport.toUpperCase()
   $: validNIF = validateNIF(formDatas.nif, formDatas.passport)
-  $: formDatas.business.province =  formDatas.selectedCountry === ESP_COUNTRY ? 
-                                    formDatas.business.cp.length === 5        ?
-                                    formDatas.business.cp.substring(0, 2)     : 
-                                    formDatas.business.province               :
-                                    formDatas.business.province
-  $: visitorsArray = [...Array(Number(nVisitors))].map((_e,i) => i+1)
-
+  $: formDatas.business.province = formDatas.selectedCountry === ESP_COUNTRY ? 
+                                   formDatas.business.cp.length === 5        ?
+                                   formDatas.business.cp.substring(0, 2)     : 
+                                   formDatas.business.province               :
+                                   formDatas.business.province
+  $: visitorsArray = initVisitorsArray().slice(0, nVisitors)
+  
   const changeNacion = () => {
     if(formDatas.selectedCountry === ESP_COUNTRY)
       formDatas.passport = ''
@@ -53,6 +71,10 @@
     const charCode = (evt.which) ? evt.which : evt.keyCode
     if(charCode != 13 && (charCode < 48 || (charCode > 57 && charCode < 65) || (charCode > 90 && charCode < 97) || (charCode > 122)))
       evt.preventDefault()
+    if(charCode >= 65 && charCode <= 90) {
+      evt.which += 32
+      evt.keyCode += 32
+    }
   }
 
   const charsNumbers = (evt) => {
@@ -145,7 +167,6 @@
             name: codeSended.data.empresa,
             city: codeSended.data.poblacion,
             cp: codeSended.data.cp,
-            address: codeSended.data.direccion,
             email: codeSended.data.email,
             phone: codeSended.data.telf,
             web: codeSended.data.web,
@@ -174,17 +195,23 @@
 
   const sendForm = async form => {
     form.preventDefault()
-    let formObject = serializeForm(new FormData(form.target))
-    formDatas.visitors = visitorsArray.map(v => {
+    // let formObject = serializeForm(new FormData(form.target))
+    formDatas.visitors = visitorsArray.slice(0, nVisitors).map(v => v.nif.toUpperCase())/* visitorsIndexArray.map(v => {
       return {
         name: formObject[`visitor-name-${v}`],
         nif: formObject[`visitor-nif-${v}`],
         email: formObject[`visitor-email-${v}`],
         phone: formObject[`visitor-phone-${v}`],
-        born: formObject[`visitor-born-${v}`],
         job: formObject[`visitor-job-${v}`]
       }
-    })
+    }) */
+
+    // const errors = validateVisitorForm(formDatas)
+    // if(errors) {
+    //   console.log(errors);
+    //   return
+    // }
+
     let result = await fetch('/gestioninterna/visitantes/newVisitor.php', {
       method: 'POST',
       headers: {
@@ -204,14 +231,14 @@
   }
 </script>
 <Overlay display={overlay}/>
-<Modal bind:display={modal} title={$_('visitorPro.modalCode.title')} cancelText={$_('visitorPro.modalCode.cancel')} acceptText={$_('visitorPro.modalCode.accept')}
+<Modal bind:display={modal} title={$_('visitor.visitorPro.modalCode.title')} cancelText={$_('visitor.visitorPro.modalCode.cancel')} acceptText={$_('visitor.visitorPro.modalCode.accept')}
   on:cancel={cancelSendData} on:accept={acceptSendData}>
-  {$_('visitorPro.modalCode.body1')} <strong>{correoDetected}</strong>.
-  {$_('visitorPro.modalCode.body2')}
+  {$_('visitor.visitorPro.modalCode.body1')} <strong>{correoDetected}</strong>.
+  {$_('visitor.visitorPro.modalCode.body2')}
 </Modal>
 <form class="headForm" on:submit|preventDefault={submitNIF}>
   <div class="input-group">
-    <label for="nacionalidad" required>{$_('visitorPro.headForm.fiscalCountry')}</label>
+    <label for="nacionalidad" required>{$_('visitor.visitorPro.headForm.fiscalCountry')}</label>
     <select id="nacionalidad" type="text" name="nacionalidad" bind:value={formDatas.selectedCountry} on:change={changeNacion} required disabled={step !== 0}>
       {#await getCountries() then countries}
       {#each Object.keys(countries) as code}
@@ -225,7 +252,7 @@
   </div>
   <div class="input-group">
     {#if formDatas.selectedCountry === ESP_COUNTRY}
-    <label for="nif" required>{$_('visitorPro.headForm.nif')}</label>
+    <label for="nif" required>{$_('visitor.visitorPro.headForm.nif')}</label>
     <div class="input-btn-next">
       <input id="nif" type="text" name="nif" bind:value={formDatas.nif} on:keypress={charsCIF} required disabled={step !== 0} maxlength="15"/>
       <button class="next btn-s" disabled={!validNIF} type={step === 0 ? "submit" : "button"} class:selected={step > 0} on:click={nextClick}>
@@ -245,28 +272,28 @@
 </form>
 {#if step === 2}
 <form class="code" on:submit|preventDefault={sendCode}>
-  <input id="codeRecover" type="text" placeholder={$_('visitorPro.codeForm.placeholderGetCode')} minlength="3" maxlength="10" name="code"/>
+  <input id="codeRecover" type="text" placeholder={$_('visitor.visitorPro.codeForm.placeholderGetCode')} minlength="3" maxlength="10" name="code"/>
   <button class="next btn-s" disabled={!validNIF} class:selected={step > 0}>
     <i class="fas fa-arrow-right"></i>
   </button>
 </form>
 {/if}
 {#if step === 1}
-<form  on:submit|preventDefault={sendForm}>
+<form on:submit|preventDefault={sendForm}>
   <section class="business-section">
-    <h2>{$_('visitorPro.companySection.title')}</h2>
-    <div class="input-group">
-      <label for="business-name" required>{$_('visitorPro.companySection.name')}</label>
+    <h2>{$_('visitor.visitorPro.companySection.title')}</h2>
+    <div class="input-group span-2">
+      <label for="business-name" required>{$_('visitor.visitorPro.companySection.name')}</label>
       <input id="business-name" type="text" bind:value={formDatas.business.name} maxlength="300" required/>
     </div>
     
     <div class="input-group">
-      <label for="business-email" required>{$_('visitorPro.companySection.mail')}</label>
+      <label for="business-email" required>{$_('visitor.visitorPro.companySection.mail')}</label>
       <input id="business-email" type="email" bind:value={formDatas.business.email} maxlength="300" required/>
     </div>
 
     <div class="input-group">
-      <label for="business-cp" required>{$_('visitorPro.companySection.zipCode')}</label>
+      <label for="business-cp" required>{$_('visitor.visitorPro.companySection.zipCode')}</label>
       <input id="business-cp" on:keypress={charsNumbers} pattern="[0-9]+" 
             minlength={formDatas.selectedCountry === ESP_COUNTRY ? 5 : 3} 
             maxlength={formDatas.selectedCountry === ESP_COUNTRY ? 5 : 10} 
@@ -275,7 +302,7 @@
     
     {#if formDatas.selectedCountry === ESP_COUNTRY}
     <div class="input-group">
-      <label for="business-province-esp" required>{$_('visitorPro.companySection.province')}</label>
+      <label for="business-province-esp" required>{$_('visitor.visitorPro.companySection.province')}</label>
       <select id="business-province-esp" type="text" bind:value={formDatas.business.province} required>
         <option value="" disabled></option>
         {#await getProvinces() then provincias}
@@ -287,33 +314,28 @@
     </div>
     {:else}
     <div class="input-group">
-      <label for="business-province" required>{$_('visitorPro.companySection.province')}</label>
+      <label for="business-province" required>{$_('visitor.visitorPro.companySection.province')}</label>
       <input id="business-province" type="text" bind:value={formDatas.business.province} maxlength="300" required/>
     </div>
     {/if}
 
     <div class="input-group">
-      <label for="business-city" required>{$_('visitorPro.companySection.city')}</label>
+      <label for="business-city" required>{$_('visitor.visitorPro.companySection.city')}</label>
       <input id="business-city" type="text" bind:value={formDatas.business.city} maxlength="300" required/>
     </div>
 
     <div class="input-group">
-      <label for="business-phone" required>{$_('visitorPro.companySection.phone')}</label>
+      <label for="business-phone" required>{$_('visitor.visitorPro.companySection.phone')}</label>
       <input id="business-phone" type="text" bind:value={formDatas.business.phone} maxlength="20" required/>
-    </div>
-    
-    <div class="input-group">
-      <label for="business-address" required>{$_('visitorPro.companySection.address')}</label>
-      <input id="business-address" type="text" bind:value={formDatas.business.address} maxlength="300" required/>
     </div>
 
     <div class="input-group">
-      <label for="business-web">{$_('visitorPro.companySection.web')}</label>
+      <label for="business-web">{$_('visitor.visitorPro.companySection.web')}</label>
       <input id="business-web" type="text" bind:value={formDatas.business.web} maxlength="400"/>
     </div>
 
     <div class="input-group">
-      <label for="business-sector" required>{$_('visitorPro.companySection.sector')}</label>
+      <label for="business-sector" required>{$_('visitor.visitorPro.companySection.sector')}</label>
       <select id="business-sector" bind:value={formDatas.business.sector} required>
         <option value="" disabled></option>
         {#await getFields() then fields}
@@ -327,10 +349,10 @@
   </section>
 
   <section class="visitors-section">
-    <h2>{$_('visitorPro.visitorSection.title')}</h2>
+    <h2>{$_('visitor.visitorPro.visitorSection.title')}</h2>
     <div class="input-group number-visitors">
-      <label for="visitors-name" required>{$_('visitorPro.visitorSection.visitorNumberSelector')}</label>
-      <select name="nVisitors" id="nVisitors" bind:value={nVisitors}>
+      <label for="visitors-name" required>{$_('visitor.visitorPro.visitorSection.visitorNumberSelector')}</label>
+      <select name="nVisitors" id="nVisitors" bind:value={nVisitors} on:change={e => visitorsIndexArray = [...Array(Number(e.target.value))].map((_e,i) => i+1) }>
         <option value="1" selected>1</option>
         <option value="2">2</option>
         <option value="3">3</option>
@@ -343,42 +365,59 @@
         <option value="10">10</option>    
       </select>
     </div>
-    {#each visitorsArray as indexVisitor}
-    <section class="visitor-section" id="visitor-{indexVisitor}">
-      <h3>{$_('visitorPro.visitorSection.visitor')} {indexVisitor}</h3>
+    {#each visitorsArray as visitor (visitor.id)}
+    <section class="visitor-section" id="visitor-{visitor.id}">
+      <h3>{$_('visitor.visitorPro.visitorSection.visitor')} {visitor.id}</h3>
       <div class="input-group">
-        <label for="visitor-name-{indexVisitor}" required>{$_('visitorPro.visitorSection.name')}</label>
-        <input id="visitor-name-{indexVisitor}" name="visitor-name-{indexVisitor}" type="text" maxlength="300" required/>
+        <label for="visitor-name-{visitor.id}" required>{$_('visitor.visitorPro.visitorSection.name')}</label>
+        <input id="visitor-name-{visitor.id}" name="visitor-name-{visitor.id}" bind:value={visitor.name} type="text" maxlength="300" required/>
+      </div>
+
+      <div class="input-group">
+        <label for="nacionalidad" required>{$_('visitor.visitorPro.headForm.fiscalCountry')}</label>
+        <select id="nacionalidad" type="text" name="nacionalidad" bind:value={visitor.country} required>
+        {#await getCountries() then countries}
+          {#each Object.keys(countries) as code}
+            <option value={code} name="visitor-name-{visitor.id}" selected={visitor.country===code}>{countries[code]}</option>
+          {/each}
+        {/await}
       </div>
     
-      <div class="input-group">
-        <label for="visitor-nif-{indexVisitor}" required>{$_('visitorPro.visitorSection.nifPassport')}</label>
-        <input id="visitor-nif-{indexVisitor}" name="visitor-nif-{indexVisitor}" type="text" maxlength="15" required/>
-      </div>
+      {#if visitor.country === ESP_COUNTRY}
+        <div class="input-group">
+          <label for="visitor-nif-{visitor.id}" required>{$_('visitor.visitorPro.visitorSection.nif')}</label>
+          <input id="visitor-nif-{visitor.id}" class="text-upper" class:invalid={validateNIF(visitor.name, '')}
+                 name="visitor-nif-{visitor.id}" bind:value={visitor.nif} type="text" maxlength="15" required/>
+        </div>
+        {:else}
+        <div class="input-group">
+          <label for="visitor-passport-{visitor.id}" required>{$_('visitor.visitorPro.visitorSection.passport')}</label>
+          <input id="visitor-passport-{visitor.id}" name="visitor-passport-{visitor.id}" 
+                 bind:value={visitor.passport} type="text" maxlength="15" required/>
+        </div>
+      {/if}
 
       <div class="input-group">
-        <label for="visitor-email-{indexVisitor}" required>{$_('visitorPro.visitorSection.mail')}</label>
-        <input id="visitor-email-{indexVisitor}" name="visitor-email-{indexVisitor}" type="email" maxlength="300" required/>
+        <label for="visitor-email-{visitor.id}" required>{$_('visitor.visitorPro.visitorSection.mail')}</label>
+        <input id="visitor-email-{visitor.id}" name="visitor-email-{visitor.id}" 
+               bind:value={visitor.email} type="email" maxlength="300" required/>
       </div>
       <div class="input-group">
-        <label for="visitor-phone-{indexVisitor}" required>{$_('visitorPro.visitorSection.phone')}</label>
-        <input id="visitor-phone-{indexVisitor}" name="visitor-phone-{indexVisitor}" type="text" maxlength="20" required/>
-      </div>
-
-      <div class="input-group">
-        <label for="visitor-born-{indexVisitor}" required>{$_('visitorPro.visitorSection.bornDate')}</label>
-        <input id="visitor-born-{indexVisitor}" name="visitor-born-{indexVisitor}" type="date" required/>
+        <label for="visitor-phone-{visitor.id}" required>{$_('visitor.visitorPro.visitorSection.phone')}</label>
+        <input id="visitor-phone-{visitor.id}" name="visitor-phone-{visitor.id}" 
+               bind:value={visitor.phone} type="text" maxlength="20" required/>
       </div>
       
       <div class="input-group">
-        <label for="visitor-job-{indexVisitor}" required>{$_('visitorPro.visitorSection.job')}</label>
-        <input id="visitor-job-{indexVisitor}" name="visitor-job-{indexVisitor}" type="text" maxlength="300" required/>
+        <label for="visitor-job-{visitor.id}" required>{$_('visitor.visitorPro.visitorSection.job')}</label>
+        <input id="visitor-job-{visitor.id}" name="visitor-job-{visitor.id}" 
+               bind:value={visitor.job} type="text" maxlength="300" required/>
       </div>
-
     </section>
     {/each}
   </section>
-  <button type="submit">{$_('visitorPro.sendButton')}</button>
+  <button type="submit">{$_('visitor.visitorPro.sendButton')}</button>
+
 </form>
 {/if}
 <style>

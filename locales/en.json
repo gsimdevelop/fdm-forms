@@ -1,51 +1,54 @@
 {
-  "landpage": {
-    "welcome": "Welcome to visitor form!",
-    "buttonProf": "I'm a professional",
-    "buttonPart": "I'm a part-time"
-  },
   "navigation": {
     "visitorsInfo": "Visitors Info"
   },
-  "visitorPro": {
-    "headForm": {
-      "fiscalCountry": "Company fiscal country",
-      "nif": "NIF/CIF"
+  "visitor": {
+    "landpage": {
+      "welcome": "Welcome to visitor form!",
+      "buttonProf": "I'm a professional",
+      "buttonPart": "I'm a part-time"
     },
-    "codeForm": {
-      "placeholderGetCode": "Enter the code"
-    },
-    "companySection": {
-      "title": "COMPANY DATA",
-      "name": "Company name",
-      "mail": "Email",
-      "zipCode": "Postal Code",
-      "province": "Province",
-      "city": "City",
-      "phone": "Telephone",
-      "address": "Direction",
-      "web": "Web page",
-      "sector": "Sector"
-    },
-    "visitorSection": {
-      "title": "VISITOR DATA",
-      "visitorNumberSelector": "Select the number of visitors",
-      "visitor": "Visitor",
-      "name": "Name",
-      "nifPassport": "NIF / Passport",
-      "mail": "Email",
-      "phone": "Phone",
-      "address": "Address",
-      "job": "Job position",
-      "bornDate": "Born date"
-    },
-    "sendButton": "Send",
-    "modalCode": {
-      "title": "Recover data",
-      "cancel": "Cancel",
-      "accept": "Yes, upload data",
-      "body1": "We have detected data for this CIF/NIF associated with the mail",
-      "body2": "Do you want to restore them? A code will be sent to the email address to upload them."
+    "visitorPro": {
+      "headForm": {
+        "fiscalCountry": "Company fiscal country",
+        "nif": "NIF/CIF"
+      },
+      "codeForm": {
+        "placeholderGetCode": "Enter the code"
+      },
+      "companySection": {
+        "title": "COMPANY DATA",
+        "name": "Company name",
+        "mail": "Email",
+        "zipCode": "Postal Code",
+        "province": "Province",
+        "city": "City",
+        "phone": "Telephone",
+        "address": "Direction",
+        "web": "Web page",
+        "sector": "Sector"
+      },
+      "visitorSection": {
+        "title": "VISITOR DATA",
+        "visitorNumberSelector": "Select the number of visitors",
+        "visitor": "Visitor",
+        "name": "Name and surname",
+        "nif": "DNI",
+        "passport": "Passport",
+        "mail": "Email",
+        "phone": "Mobile phone",
+        "address": "Address",
+        "job": "Job position",
+        "bornDate": "Born date"
+      },
+      "sendButton": "Send",
+      "modalCode": {
+        "title": "Recover data",
+        "cancel": "Cancel",
+        "accept": "Yes, upload data",
+        "body1": "We have detected data for this CIF/NIF associated with the mail",
+        "body2": "Do you want to restore them? A code will be sent to the email address to upload them."
+      }
     }
   }
 }
