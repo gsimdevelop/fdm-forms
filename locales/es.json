@@ -1,6 +1,7 @@
 {
   "navigation": {
-    "visitorsInfo": "Info Visitantes"
+    "visitorsInfo": "Info Visitantes",
+    "expositorsInfo": "Info Expositores"
   },
   "landingPage": {
     "title": "Seleccione el formulario al que quiere acceder",
@@ -9,14 +10,20 @@
   },
   "visitor": {
     "landpage": {
-      "welcome": "¡Bienvenido al formulario de visitante!",
+      "welcome": "Formulario de visitantes",
       "buttonProf": "Soy un profesional",
       "buttonPart": "Soy un particular"
     },
     "visitorPro": {
+      "msg": {
+        "errSendCode": "Error al enviar el código",
+        "sendCode": "Código enviado con éxito",
+        "incorrectCode": "Código incorrecto"
+      },
       "headForm": {
         "fiscalCountry": "País fiscal empresa",
-        "nif": "NIF/CIF"
+        "nif": "NIF/CIF",
+        "passport": "Id. fiscal empresa"
       },
       "modalCode": {
         "title": "Recuperar datos",
@@ -66,15 +73,39 @@
         }
       },
       "sendButton": "Enviar"
+    },
+    "finalModal": {
+      "title": "Su entrada ha sido enviada",
+      "body": "Cada visitante recibirá una copia de su entrada en la dirección de correo electrónico que nos has facilitado.",
+      "reload": "Recargar el formulario",
+      "return": "Volver a la página principal"
+    },
+    "modalCode": {
+      "title": "Código incorrecto",
+      "body": "¿Desea volver a introducir un código o cargar el formulario vacío?",
+      "reload": "Cargar formulario vacío",
+      "return": "Volver a introducir el código"
     }
   },
   "expositor": {
+    "welcome": "Formulario de expositores",
     "submitButton": "Imprimir para firmar",
     "finalModal": {
       "title": "Su formulario ha sido enviado",
       "body": "Para completar el proceso de inscripción, debe imprimir el formulario y seguir los pasos que se indican en él. Se le ha enviado una copia del formulario a la dirección de correo especificada:",
       "reload": "Recargar el formulario",
       "return": "Volver a la página principal"
+    },
+    "options": {
+      "completePay": "Pago completo anterior a 15/03",
+      "requiredInsurance": "Seguro <strong>obligatorio</strong> de daños materiales",
+      "contract": "Estand contract",
+      "stand48": "Estand premontado 48m²",
+      "stand64": "Estand premontado 64m²",
+      "freeFloor": "Suelo libre (obligatorio instalación de tarima con zócalo de entre 8 y 10 cm de altura)",
+      "painting": "Pintura de estand",
+      "cleaning": "Limpieza diaria de estand",
+      "carpet": "Moqueta (petición antes del 19-04-22)"
     }
   }
 }

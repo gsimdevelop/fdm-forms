@@ -12,11 +12,19 @@
     {url: "https://www.instagram.com/feriadelmuebleyecla", icon: "fab fa-instagram"},
     {url: "https://www.linkedin.com/company/feriamuebleyecla", icon: "fab fab fa-linkedin-in"},
   ]
+
+  const formVisitorStr = '#Visitor'
+	const formExpositorStr = '#Expositor'
+  export let formSelected = ''
 </script>
 <nav class="nav-lang">
   <strong style="padding-left: 15px;"> 
     FMY 60′ Edición · 
-    <a href="https://feriayecla.com/informacion-general/" class="info underlined">{$_('navigation.visitorsInfo')}</a>
+    {#if formSelected === formExpositorStr}
+      <a href="https://feriayecla.com/informacion-para-el-expositor/" target="_blank" class="info underlined">{$_('navigation.expositorsInfo')}</a>
+    {:else if formSelected === formVisitorStr}
+      <a href="https://feriayecla.com/informacion-general/" target="_blank" class="info underlined">{$_('navigation.visitorsInfo')}</a>
+    {/if}
   </strong>
   <ul class="rrss">
     {#each rrss as rs}

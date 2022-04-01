@@ -1,6 +1,8 @@
 <script>
   import Modal from '../ui/Modal.svelte'
   import Overlay from '../ui/Overlay.svelte'
+  import { printVisitorPDF } from '../services/jsPDFGenerator'
+  import { tick } from 'svelte'
 
   import { objToWWWForm, validateNIF, serializeForm, validateVisitorForm, ESP_COUNTRY } from '../services/utils'
 
@@ -46,7 +48,7 @@
   
   let formDatas = initFormData()
 
-  let overlay = false, modal = false, correoDetected = '', visitorsIndexArray = [1]
+  let overlay = false, modal = false, modal2 = false, modalErrorCode = false, correoDetected = '', visitorsIndexArray = [1]
 
   let nVisitors = '1';
 
@@ -55,7 +57,7 @@
   $: validNIF = validateNIF(formDatas.nif, formDatas.passport)
   $: formDatas.business.province = formDatas.selectedCountry === ESP_COUNTRY ? 
                                    formDatas.business.cp.length === 5        ?
-                                   formDatas.business.cp.substring(0, 2)     : 
+                                   String(Number(formDatas.business.cp.substring(0, 2)))     : 
                                    formDatas.business.province               :
                                    formDatas.business.province
   $: visitorsArray = initVisitorsArray().slice(0, nVisitors)
@@ -72,7 +74,7 @@
     if(charCode != 13 && (charCode < 48 || (charCode > 57 && charCode < 65) || (charCode > 90 && charCode < 97) || (charCode > 122)))
       evt.preventDefault()
     if(charCode >= 65 && charCode <= 90) {
-      evt.which += 32
+      // evt.which += 32
       evt.keyCode += 32
     }
   }
@@ -134,13 +136,13 @@
         codeSended = await codeSended.json()
         if(codeSended.status === 0) {
           step = 2
-          alert("Código enviado con éxito")
+          alert($_('visitor.visitorPro.msg.sendCode'))
         } else
-          alert("error al enviar el código")
+          alert($_('visitor.visitorPro.msg.errSendCode'))
       } else
-        alert("error al enviar el código")
+        alert($_('visitor.visitorPro.msg.errSendCode'))
     } catch (error) {
-      alert('Error al enviar el código')
+      alert($_('visitor.visitorPro.msg.errSendCode'))
     } finally {
       overlay = false
     }
@@ -163,22 +165,35 @@
       })
       if(codeSended.status === 200) {
         codeSended = await codeSended.json()
+        if(codeSended.status === 0) {
           formDatas.business = {
             name: codeSended.data.empresa,
             city: codeSended.data.poblacion,
-            cp: codeSended.data.cp,
+            cp: codeSended.data.cp ? 
+                codeSended.data.cp.length === 4 ? 
+                '0' + codeSended.data.cp : 
+                codeSended.data.cp : 
+                '',
             email: codeSended.data.email,
             phone: codeSended.data.telf,
             web: codeSended.data.web,
-            sector: codeSended.data.sector
+            sector: String(codeSended.data.sector_id),
+            province: codeSended.data.provincia
           }
-      } else
+          await tick()
+          overlay = false
+          step = 1
+        } else 
+          modalErrorCode = true
+      } else {
         alert("error al enviar el código")
+        step = 1
+        overlay = false
+      }
     } catch (error) {
       alert('Error al enviar el código')
-    } finally {
-      overlay = false
       step = 1
+      overlay = false
     }
   }
 
@@ -194,36 +209,42 @@
   }
 
   const sendForm = async form => {
+    console.log(visitorsArray)
+    // return
     form.preventDefault()
     // let formObject = serializeForm(new FormData(form.target))
-    formDatas.visitors = visitorsArray.slice(0, nVisitors).map(v => v.nif.toUpperCase())/* visitorsIndexArray.map(v => {
-      return {
-        name: formObject[`visitor-name-${v}`],
-        nif: formObject[`visitor-nif-${v}`],
-        email: formObject[`visitor-email-${v}`],
-        phone: formObject[`visitor-phone-${v}`],
-        job: formObject[`visitor-job-${v}`]
-      }
-    }) */
-
-    // const errors = validateVisitorForm(formDatas)
-    // if(errors) {
-    //   console.log(errors);
-    //   return
-    // }
+    formDatas.visitors = visitorsArray.map(v => {
+      v.nif = v.nif.toUpperCase()
+      return v
+    })
 
     let result = await fetch('/gestioninterna/visitantes/newVisitor.php', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({...formDatas})
+      body: JSON.stringify(formDatas)
     })
     if(result.ok && result.status === 200) {
       result = await result.json()
       if(result.status === 0) {
-        alert('Visita registrada con éxito\nIdentificadores de los visitantes registrados:\n'+result.data.map(d => d.id+'\n'))
-        window.location.href = '/gestioninterna/visitantes/visitantes.php'
+        // alert('Visita registrada con éxito\nIdentificadores de los visitantes registrados:\n'+result.data.map(d => d.id+'\n'))
+        overlay = true
+        modal2 = true
+        const sendPDFs = formDatas.visitors.map((v, i) => {
+          const { id, aleatorio } = result.data[i]
+          const pdf = btoa(printVisitorPDF({ nameCompany: formDatas.business.name, visitorName: v.name, 
+                          idVisitor: id, randomNumber: aleatorio }))
+          return { email: v.email, pdf, id: id }
+        })
+
+        await fetch('/gestioninterna/visitantes/sendPDFVisitors.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(sendPDFs)
+        })
       } else
         alert('Error al registrar la visita')
     } else
@@ -236,7 +257,23 @@
   {$_('visitor.visitorPro.modalCode.body1')} <strong>{correoDetected}</strong>.
   {$_('visitor.visitorPro.modalCode.body2')}
 </Modal>
-<form class="headForm" on:submit|preventDefault={submitNIF}>
+
+<Modal bind:display={modal2} title={$_('visitor.finalModal.title')} cancelText={$_('visitor.finalModal.reload')} 
+       acceptText={$_('visitor.finalModal.return')}
+  on:cancel={() => window.location.reload()} on:accept={() => window.location.href="https://feriayecla.com"}>
+  {$_('visitor.finalModal.body')}
+</Modal>
+
+<Modal bind:display={modalErrorCode} title={$_('visitor.modalCode.title')} cancelText={$_('visitor.modalCode.reload')} 
+       acceptText={$_('visitor.modalCode.return')}
+  on:cancel={() => { modalErrorCode = overlay = false; step = 1 }} 
+  on:accept={() => modalErrorCode = overlay = false }>
+  {$_('visitor.modalCode.body')}
+</Modal>
+
+<h1>{$_('visitor.landpage.welcome')}</h1>
+
+<form class="headForm" on:submit|preventDefault={submitNIF} style='width: 300px'>
   <div class="input-group">
     <label for="nacionalidad" required>{$_('visitor.visitorPro.headForm.fiscalCountry')}</label>
     <select id="nacionalidad" type="text" name="nacionalidad" bind:value={formDatas.selectedCountry} on:change={changeNacion} required disabled={step !== 0}>
@@ -244,9 +281,6 @@
       {#each Object.keys(countries) as code}
       <option value="{code}" selected={formDatas.selectedCountry===code}>{countries[code]}</option>
       {/each}
-      {:catch}
-      <option value="ESP" selected={formDatas.selectedCountry==="ESP"}>ESPAÑA</option>
-      <option value="FRA" selected={formDatas.selectedCountry==="FRA"}>FRANCIA</option>
       {/await}
     </select>
   </div>
@@ -260,7 +294,7 @@
       </button>
     </div>
     {:else}
-    <label for="pasprt" required>Id. fiscal empresa</label>
+    <label for="pasprt" required>{$_('visitor.visitorPro.headForm.passport')}</label>
     <div class="input-btn-next">
       <input id="pasprt" type="text" name="pasprt" bind:value={formDatas.passport} on:keypress={charsCIF} required disabled={step !== 0} maxlength="15"/>
       <button class="next btn-s" disabled={!validNIF} type={step === 0 ? "submit" : "button"} class:selected={step > 0} on:click={nextClick}>
@@ -307,7 +341,7 @@
         <option value="" disabled></option>
         {#await getProvinces() then provincias}
         {#each Object.keys(provincias) as idProvincia}
-        <option value="{idProvincia}" selected={formDatas.business.sector===idProvincia}>{provincias[idProvincia]}</option>
+        <option value="{idProvincia}" selected={formDatas.business.province===idProvincia}>{provincias[idProvincia]}</option>
         {/each}
         {/await}
       </select>
@@ -416,11 +450,28 @@
     </section>
     {/each}
   </section>
+  
+  <div style="margin: 1em 0;">
+    <span>
+      <input type="checkbox" id="terms" style="width: inherit;" required/>
+      <label for="terms" style="display: inherit;">
+        {$_('visitor.visitorPro.companySection.politicPrivacyText')}
+      </label>
+      <a href="https://feriayecla.com/politica-de-privacidad/" target="_blank">
+        {$_('visitor.visitorPro.companySection.politicPrivacy')}
+      </a>
+    </span>
+  </div>
   <button type="submit">{$_('visitor.visitorPro.sendButton')}</button>
 
 </form>
 {/if}
 <style>
+  label[for="terms"]::before {
+    content: "* ";
+    color: var(--red-color);
+    margin-left: 0.2em;
+  }
 
   form.code {
     display: flex;

@@ -75,11 +75,12 @@ export default {
 		// instead of npm run dev), minify
 		production && terser(),
 
-		// // Copy our public folder to frontend folder
+		// Copy our public folder to frontend folder
     production &&
     copy({
-      targets: [{ src: 'public/*', dest: '/mnt/c/Users/Laboratorio_simGEST/Documents/desarrollo/repos/gestioninterna-fdm/forms' }],
-    }),
+			targets: [{ src: 'public/*', dest: '/mnt/c/Users/Laboratorio_simGEST/Documents/desarrollo/repos/gestioninterna-fdm/forms' }],
+			hook: 'closeBundle'
+    })
 	],
 	watch: {
 		clearScreen: false

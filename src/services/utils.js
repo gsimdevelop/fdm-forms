@@ -21,7 +21,7 @@ const mapNifNie = 'trwagmyfpdxbnjzsqvhlcke'
 const mapNumberNie = { X: 0, Y: 1, Z: 2 }
 
 const validateNIF = (nif, passport) => {
-  const cifRegex = /^([XYZ])([0-9]{7})([A-HK-NPQS0-9])$/i
+  const cifRegex = /^([ABCDEFGHJKLMNPQRSUVW])(\d{7})([0-9A-J])$/
   // const psprtRegex = /^[A-Z]{3}[0-9]{6}[A-Z]?$/i
 
   if(nif !== '') {

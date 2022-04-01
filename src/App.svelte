@@ -5,6 +5,7 @@
 
 <script>
 	import Navigator from './Components/Navigator.svelte'
+	import Footer from './Components/Footer.svelte'
 	import VisitorForm from './VisitorForm.svelte'
 	import ExpositorForm from './ExpositorForm.svelte'
 	import { _ } from './services/i18n'
@@ -14,7 +15,7 @@
 	$: formSelected = document.location.hash
 </script>
 
-<Navigator/>
+<Navigator bind:formSelected/>
 <main>
 	{#if formSelected===formExpositorStr}
 	<ExpositorForm/>
@@ -26,9 +27,7 @@
 	<a href={formVisitorStr}><button on:click={() => formSelected = formVisitorStr}>{$_('landingPage.formVisitor')}</button></a>
 	{/if}
 </main>
-<footer>
-		
-</footer>
+<Footer/>
 <style>
 	main {
 		text-align: center;
@@ -36,9 +35,11 @@
 		max-width: none;
 		margin: 0 auto;
 	}
-/* 
-	@media (min-width: 640px) {
+ 
+	@media (max-width: 640px) {
 		main {
+			width: 100%;
+			padding: 0;
 		}
-	} */
+	} 
 </style>

@@ -9,6 +9,7 @@
   let step = 0
   let overlay = false, modal = false, modal2 = false, correoDetected = ''
   let formDatas = { 
+    id: '',
     nameCompany: '', 
     selectedCountry: ESP_COUNTRY, 
     nif: '', 
@@ -24,6 +25,7 @@
     contactPersonPhone: '',
     contactPersonEmail: '',
     options: {
+      contract: false,
       stand48: false,
       stand64: false,
       freeFloor: false,
@@ -38,7 +40,7 @@
   $: validNIF = validateNIF(formDatas.nif, formDatas.passport)
   $: formDatas.province = formDatas.selectedCountry === ESP_COUNTRY ? 
                                    formDatas.cp.length === 5        ?
-                                   formDatas.cp.substring(0, 2)     : 
+                                   String(Number(formDatas.cp.substring(0, 2)))     : 
                                    formDatas.province               :
                                    formDatas.province
 
@@ -148,6 +150,7 @@
           step = 1
           return
         }
+        formDatas.id = codeSended.data.id
         formDatas.nameCompany = codeSended.data.empresa
         formDatas.city = codeSended.data.poblacion
         formDatas.cp = codeSended.data.cp
@@ -237,7 +240,9 @@
   {$_('expositor.finalModal.body')} {formDatas.email}
 </Modal>
 
-<form class="headForm" on:submit|preventDefault={submitNIF}>
+<h1>{$_('expositor.welcome')}</h1>
+
+<form class="headForm" on:submit|preventDefault={submitNIF} style='width: 300px'>
   <div class="input-group">
     <label for="nacionalidad" required>{$_('visitor.visitorPro.headForm.fiscalCountry')}</label>
     <select id="nacionalidad" type="text" name="nacionalidad" bind:value={formDatas.selectedCountry} on:change={changeNacion} required disabled={step !== 0}>
@@ -360,13 +365,13 @@
         <tr>
           <th></th>
           <th></th>
-          <th><p>Pago completo</p><p>anterior a 01/03</p></th>
+          <th><p style="max-width: 150px;">{$_('expositor.options.completePay')}</p></th>
           <th></th>
         </tr>
         <tr>
           <td>
             <label for="seguro" required>
-              Seguro <strong style="padding: 0 0.2em">obligatorio</strong> de daños materiales
+              {@html $_('expositor.options.requiredInsurance')}
             </label>
           </td>
           <td>30 €</td>
@@ -374,37 +379,43 @@
           <td><input id="seguro" type="checkbox" checked disabled/></td>
         </tr>
         <tr>
-          <td><label for="stand-48">Estand premontado 48m²</label></td>
+          <td><label for="contract">{$_('expositor.options.contract')}</label></td>
+          <td><label for="contract" class="center-flex">1000 €</label></td>
+          <td></td>
+          <td><input id="contract" type="checkbox" bind:checked={formDatas.options.contract}/></td>
+        </tr>
+        <tr>
+          <td><label for="stand-48">{$_('expositor.options.stand48')}</label></td>
           <td><label for="stand-48" class="center-flex">45 €/m² (2.160 €)</label></td>
           <td><label for="stand-48" class="center-flex">40 €/m² (1.920 €)</label></td>
           <td><input id="stand-48" type="checkbox" bind:checked={formDatas.options.stand48}/></td>
         </tr>
         <tr>
-          <td><label for="stand-64">Estand premontado 64m²</label></td>
+          <td><label for="stand-64">{$_('expositor.options.stand64')}</label></td>
           <td><label for="stand-64" class="center-flex">45 €/m² (2.880 €)</label></td>
           <td><label for="stand-64" class="center-flex">40 €/m² (2.560 €)</label></td>
           <td><input id="stand-64" type="checkbox" bind:checked={formDatas.options.stand64}/></td>
         </tr>
         <tr>
-          <td><label for="suelo-libre">Suelo libre (obligatorio instalación de tarima con zócalo de ebtre 8 y 10 cm de altura)</label></td>
+          <td><label for="suelo-libre">{$_('expositor.options.freeFloor')}</label></td>
+          <td><label for="suelo-libre" class="center-flex">30 €/m²</label></td>
           <td><label for="suelo-libre" class="center-flex">25 €/m²</label></td>
-          <td><label for="suelo-libre" class="center-flex">20 €/m²</label></td>
           <td><input id="suelo-libre" type="checkbox" bind:checked={formDatas.options.freeFloor}/></td>
         </tr>
         <tr>
-          <td><label for="pintura">Pintura de estand</label></td>
+          <td><label for="pintura">{$_('expositor.options.painting')}</label></td>
           <td><label for="pintura" class="center-flex">7,50 €/m²</label></td>
           <td></td>
           <td><input id="pintura" type="checkbox" bind:checked={formDatas.options.painting}/></td>
         </tr>
         <tr>
-          <td><label for="limpieza">Limpieza diaria de estand</label></td>
+          <td><label for="limpieza">{$_('expositor.options.cleaning')}</label></td>
           <td><label for="limpieza" class="center-flex">35 €/día</label></td>
           <td></td>
           <td><input id="limpieza" type="checkbox" bind:checked={formDatas.options.cleaning}/></td>
         </tr>
         <tr>
-          <td><label for="moqueta">Moqueta (petición antes del 19-04-22)</label></td>
+          <td><label for="moqueta">{$_('expositor.options.carpet')}</label></td>
           <td><label for="moqueta" class="center-flex">6 €/m²</label></td>
           <td></td>
           <td><input id="moqueta" type="checkbox" bind:checked={formDatas.options.carpet}/></td>
@@ -424,7 +435,7 @@
           <input id="stand-64" type="checkbox" bind:checked={formDatas.options.stand64}/>
         </div>
         <div class="input-group">
-          <label for="suelo-libre">Suelo libre (obligatorio instalación de tarima con zócalo de ebtre 8 y 10 cm de altura)</label>
+          <label for="suelo-libre">Suelo libre (obligatorio instalación de tarima con zócalo de entre 8 y 10 cm de altura)</label>
           <input id="suelo-libre" type="checkbox" bind:checked={formDatas.options.freeFloor}/>
         </div>
         <div class="input-group">
@@ -441,7 +452,7 @@
         </div> 
       --> 
     </section>
-    <div>
+    <div style="margin: 1em 0;">
       <span>
         <input type="checkbox" id="terms" style="width: inherit;" required/>
         <label for="terms" style="display: inherit;">
@@ -452,8 +463,11 @@
         </a>
       </span>
     </div>
-    <footer>
-      <button type="submit">{$_('expositor.submitButton')}</button>
+    <footer style="margin-bottom: 1em;">
+      <button class="g-recaptcha" 
+        data-sitekey="reCAPTCHA_site_key" 
+        data-callback='onSubmit' 
+        data-action='submit' type="submit">{$_('expositor.submitButton')}</button>
     </footer>
 </form>
 {/if}
@@ -474,9 +488,9 @@
     margin: auto;
   }
 
-  td > label {
+/*   td > label {
     cursor: pointer;
-  }
+  } */
   th > p {
     margin: 0;
   }
@@ -557,6 +571,10 @@
 
   #nif, #pasprt {
     border-right: none;
+  }
+
+  input[type="checkbox"] {
+    width: inherit;
   }
 
   @media(min-width: 768px) {

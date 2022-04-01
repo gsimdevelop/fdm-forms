@@ -1,17 +1,19 @@
 {
   "navigation": {
-    "visitorsInfo": "Visitors Info"
+    "visitorsInfo": "Visitors Info",
+    "expositorsInfo": "Expositors Info"
   },
   "visitor": {
     "landpage": {
-      "welcome": "Welcome to visitor form!",
+      "welcome": "Visitors form",
       "buttonProf": "I'm a professional",
       "buttonPart": "I'm a part-time"
     },
     "visitorPro": {
       "headForm": {
         "fiscalCountry": "Company fiscal country",
-        "nif": "NIF/CIF"
+        "nif": "NIF/CIF",
+        "passport": "company tax ID"
       },
       "codeForm": {
         "placeholderGetCode": "Enter the code"
@@ -26,7 +28,16 @@
         "phone": "Telephone",
         "address": "Direction",
         "web": "Web page",
-        "sector": "Sector"
+        "sector": "Sector",
+        "contactEmail": "Contact email",
+        "contactName": "Contact name",
+        "contactPhone": "Contact phone number",
+        "error": {
+          "email": "The email was invalid",
+          "urlWeb": "The web page was invalid"
+        },
+        "politicPrivacy": "Privacy politic",
+        "politicPrivacyText": "Data Protection. I read and accept the "
       },
       "visitorSection": {
         "title": "VISITOR DATA",
@@ -39,7 +50,10 @@
         "phone": "Mobile phone",
         "address": "Address",
         "job": "Job position",
-        "bornDate": "Born date"
+        "bornDate": "Born date",
+        "error": {
+          "phoneRequired": "Phone number required"
+        }
       },
       "sendButton": "Send",
       "modalCode": {
@@ -48,7 +62,50 @@
         "accept": "Yes, upload data",
         "body1": "We have detected data for this CIF/NIF associated with the mail",
         "body2": "Do you want to restore them? A code will be sent to the email address to upload them."
+      },
+      "msg": {
+        "errSendCode": "Error sending the code",
+        "sendCode": "Code sent successfully",
+        "incorrectCode": "Wrong code"
       }
+    },
+    "finalModal": {
+      "body": "Each visitor will receive a copy of their entry at the email address you have provided.",
+      "reload": "Reload the form",
+      "return": "Return to main page",
+      "title": "Your entry has been sent"
+    },
+    "modalCode": {
+      "title": "Wrong code",
+      "reload": "Load empty form",
+      "return": "Re-enter the code",
+      "body": "Do you want to re-enter a code or load the empty form?"
     }
+  },
+  "expositor": {
+    "welcome": "Expositors form",
+    "finalModal": {
+      "body": "To complete the enrollment process, you must print the form and follow the steps on it. \nA copy of the form has been sent to the specified email address:",
+      "reload": "Reload form",
+      "return": "Return to main page",
+      "title": "Your form was sent"
+    },
+    "submitButton": "Print to sign",
+    "options": {
+      "carpet": "Carpet (petition before 2022/04/19)",
+      "cleaning": "Daily stand clean",
+      "completePay": "Complete payment before 15/03",
+      "freeFloor": "Free floor (Mandatory platform installation with socket between 8 and 10 cm high)",
+      "contract": "Stand contract",
+      "painting": "Stand paint",
+      "requiredInsurance": "<strong>Required</strong> insurance of material damages",
+      "stand48": "Preassembled 48m² stand",
+      "stand64": "Preassembled 64m² stand"
+    }
+  },
+  "landingPage": {
+    "formExpo": "Form to expose",
+    "formVisitor": "Form to visitors",
+    "title": "Select the form you want to access"
   }
 }
