@@ -61,6 +61,7 @@
         "visitorNumberSelector": "Seleccione el número de visitantes",
         "visitor": "Visitante",
         "name": "Nombre y apellidos",
+        "nacionality": "Nacionalidad",
         "nif": "DNI",
         "passport": "Pasaporte",
         "mail": "Correo electrónico",

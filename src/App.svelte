@@ -8,10 +8,14 @@
 	import Footer from './Components/Footer.svelte'
 	import VisitorForm from './VisitorForm.svelte'
 	import ExpositorForm from './ExpositorForm.svelte'
+	import RegisterForm from './RegisterForm.svelte'
+	import RegisterExpositorForm from './RegisterExpositorForm.svelte'
 	import { _ } from './services/i18n'
 
 	const formVisitorStr = '#Visitor'
 	const formExpositorStr = '#Expositor'
+	const formRegisterStr = '#Register'
+	const formRegisterExpoStr = '#RegisterExpo'
 	$: formSelected = document.location.hash
 </script>
 
@@ -21,6 +25,10 @@
 	<ExpositorForm/>
 	{:else if formSelected===formVisitorStr}
 	<VisitorForm/>
+	{:else if formSelected===formRegisterStr}
+	<RegisterForm/>
+	{:else if formSelected===formRegisterExpoStr}
+	<RegisterExpositorForm/>
 	{:else}
 	<h2>{$_('landingPage.title')}</h2>
 	<a href={formExpositorStr}><button on:click={() => formSelected = formExpositorStr}>{$_('landingPage.formExpo')}</button></a>

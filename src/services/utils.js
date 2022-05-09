@@ -139,11 +139,13 @@ const translateCountry = async country => (await getCountries())[country]
 
 const translateProvince = async province => (await getProvinces())[province]
 
-
-
+const getFields = async () => {
+  const response = await fetch('/gestioninterna/funciones/sectores.php');
+  return await response.json();
+}
 
 
 export {
   objToWWWForm, validateNIF, serializeForm, ESP_COUNTRY, validateVisitorForm,
-  getCountries, getProvinces, translateCountry, translateProvince
+  getCountries, getProvinces, translateCountry, translateProvince, getFields
 }

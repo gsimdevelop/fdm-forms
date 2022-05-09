@@ -4,7 +4,7 @@
   import { printVisitorPDF } from '../services/jsPDFGenerator'
   import { tick } from 'svelte'
 
-  import { objToWWWForm, validateNIF, serializeForm, validateVisitorForm, ESP_COUNTRY } from '../services/utils'
+  import { objToWWWForm, validateNIF, serializeForm, validateVisitorForm, ESP_COUNTRY, getProvinces } from '../services/utils'
 
   import { _ } from '../services/i18n'
 
@@ -22,12 +22,6 @@
     const response = await fetch('/gestioninterna/funciones/sectores.php');
     return await response.json();
   }
-  
-  const getProvinces = async () => {
-    const response = await fetch('/gestioninterna/funciones/provincias.php');
-    return await response.json();
-  }
-
   
   let step = 0
 
@@ -408,7 +402,7 @@
       </div>
 
       <div class="input-group">
-        <label for="nacionalidad" required>{$_('visitor.visitorPro.headForm.fiscalCountry')}</label>
+        <label for="nacionalidad" required>{$_('visitor.visitorPro.visitorSection.nacionality')}</label>
         <select id="nacionalidad" type="text" name="nacionalidad" bind:value={visitor.country} required>
         {#await getCountries() then countries}
           {#each Object.keys(countries) as code}

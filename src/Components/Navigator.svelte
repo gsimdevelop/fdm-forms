@@ -15,8 +15,11 @@
 
   const formVisitorStr = '#Visitor'
 	const formExpositorStr = '#Expositor'
+	const formRegisterStr = '#Register'
+  const formRegisterExpoStr = '#RegisterExpo'
   export let formSelected = ''
 </script>
+{#if !(new RegExp([formRegisterStr, formRegisterExpoStr].join('|')).test(formSelected))}
 <nav class="nav-lang">
   <strong style="padding-left: 15px;"> 
     FMY 60′ Edición · 
@@ -44,11 +47,11 @@
     </li>
   </ul>
 </nav>
-
+{/if}
 <nav class="nav-logo">
   <a href="https://feriayecla.com" class="logo">
     <img
-      src="https://feriayecla.com/wp-content/uploads/2021/07/logo-FMY-2021-3.png"
+      src="images/Cabecera_logo.jpeg"
       alt="Logo"
     />
   </a>

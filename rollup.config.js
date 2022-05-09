@@ -76,10 +76,11 @@ export default {
 		production && terser(),
 
 		// Copy our public folder to frontend folder
-    production &&
+    // production &&
     copy({
 			targets: [{ src: 'public/*', dest: '/mnt/c/Users/Laboratorio_simGEST/Documents/desarrollo/repos/gestioninterna-fdm/forms' }],
-			hook: 'closeBundle'
+			hook: 'closeBundle',
+			verbose: true
     })
 	],
 	watch: {
