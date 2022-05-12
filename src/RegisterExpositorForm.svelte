@@ -85,7 +85,7 @@ let rfids = []
     {#if openExpo === expositor.id}
       <div class="expo-rfid-content">
         <form on:submit|preventDefault={postRfid}>
-          <input type="text" bind:value={rfidId} placeholder="INGRESA UN CODIGO RFID" required>
+          <input type="text" bind:value={rfidId} placeholder="INGRESA UN CODIGO RFID" required  maxlength="16" style="max-width: 250px;">
           <button type="submit" class="btn-s">OK</button>
         </form>
         {#if rfids.length > 0}

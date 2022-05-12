@@ -332,7 +332,7 @@
 
   <section class="rfid-section">
     <label for="rfid" required>Tarjeta RFID</label>
-    <input id="rfid" bind:value={rfid} name="rfid" type="text" style="width: 250px; margin: 0" bind:this={rfidEl} required />
+    <input id="rfid" bind:value={rfid} name="rfid" type="text" style="width: 250px; margin: 0" bind:this={rfidEl} required maxlength="16" />
   </section>
   
   <button type="submit">{$_('visitor.visitorPro.sendButton')}</button>
