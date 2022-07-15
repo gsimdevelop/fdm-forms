@@ -81,11 +81,14 @@ let rfids = []
   {#each expositores as expositor (expositor.id)}
   <article class="expo-rfid" on:click={openExpositor(expositor.id)} class:open-expo={openExpo === expositor.id}>
     <p class="name">{expositor.empresa}</p>
-    <p class="rfids">RFIDs asociados: {expositor.rfids_associated}</p>
+    <p class="rfids" class:red-text={expositor.nTarjetas < expositor.rfids_associated} class:yellow-text={expositor.nTarjetas > expositor.rfids_associated} 
+       class:green-text={expositor.nTarjetas === expositor.rfids_associated}>
+      RFIDs asociados: {expositor.rfids_associated}/{expositor.nTarjetas}
+    </p>
     {#if openExpo === expositor.id}
       <div class="expo-rfid-content">
-        <form on:submit|preventDefault={postRfid}>
-          <input type="text" bind:value={rfidId} placeholder="INGRESA UN CODIGO RFID" required  maxlength="16" style="max-width: 250px;">
+        <form class="form-rfid" on:submit|preventDefault={postRfid}>
+          <input type="text" bind:value={rfidId} placeholder="INGRESA UN CODIGO RFID" required  maxlength="16" style="max-width: 250px;margin: 0">
           <button type="submit" class="btn-s">OK</button>
         </form>
         {#if rfids.length > 0}
@@ -142,10 +145,24 @@ section.expositores {
 }
 
 .expo-rfid-content > form > button {
-  position: absolute;
-  top: 0;
-  right: 0;
   margin: 0;
+}
+
+.form-rfid {
+  display: flex;
+  justify-content: center;
+}
+
+.yellow-text {
+  color: #ffd700;
+}
+
+.red-text {
+  color: #ca0411;
+}
+
+.green-text {
+  color: #12ca45;
 }
 
 </style>
